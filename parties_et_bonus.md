@@ -1,7 +1,7 @@
 # **Division du projet en trois parties**
 
 ## **PARTIE 1 : Traitement des données**
-Responsable : *???*
+Responsable : *Emmanuel Kotelenets*
 
 **Responsabilités :**
 - Lecture et traitement des fichiers Shapefile
@@ -12,7 +12,7 @@ Responsable : *???*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## **PARTIE 2 : Visualisation statique**
-Responsable : *???*
+Responsable : *Lucile Pageot*
 
 **Responsabilités :**
 - Dessin des contours des départements avec `fltk`
@@ -23,7 +23,7 @@ Responsable : *???*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## **PARTIE 3 : Interactivité et animation**
-Responsable : *???*
+Responsable : *Guy Eliassaint*
 
 **Responsabilités :**
 - Création des cartes animées (évolution temporelle)
