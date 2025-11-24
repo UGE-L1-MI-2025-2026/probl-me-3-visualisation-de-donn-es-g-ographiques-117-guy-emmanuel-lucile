@@ -1,16 +1,20 @@
-1. il faut creer plusieurs plans ou un est suffit? 
+1. il faut creer plusieurs plans ou un est suffit?
+
+Reponse: il faut choisir que est-ce qu'on va faire
+
 2. donc, l'info dans le fichier .shp est pour 3D? il faut utiliser la projection chaque fois, c'est-a-dire il faut utiliser
 une fonction deja cree?
-3. 
+
+Reponse: OUI
+
+3. Les rectangles avec du couleur sont cree AVANT les polygons.
+
+4. Quelle est la meilleure point de depart? Quels sont des astuces ou des choses qui ont besoin bcp d'attention?
+1) comprendre quel type de plan on va faire
+2) comprendre comment il faut travailler avec des fichiers
+3) trouver des fichiers necessaires dans l'Internet
 
 
-
-
-
-
-
-
-
-a regarder: 
+a regarder:
 1. projection de Mercator
-2. 
+2. ?
