@@ -14,7 +14,7 @@ largeur_legende = 200              # réserve à droite pour la légende
 largeur_carte = largeur_total - largeur_legende
 
 # zoom (change si nécessaire)
-scale_boost = 2.0
+scale_boost = 1.5
 
 # ---------- lecture du shapefile ----------
 sf = shapefile.Reader(fichier_shp)
