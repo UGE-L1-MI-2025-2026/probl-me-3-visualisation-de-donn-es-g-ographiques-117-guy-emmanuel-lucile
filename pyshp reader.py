@@ -1,4 +1,4 @@
-# carte_france_legende_fixed.py
+# carte_france_lieux.py
 import shapefile
 import os
 from fltk import *
@@ -8,102 +8,94 @@ from convert import coords_to_pixels
 path = os.getcwd()
 fichier_shp = path + "/departements-20180101-shp/departements-20180101.shp"
 
-# zone fenêtre
 largeur_total, hauteur_total = 1200, 1000
-largeur_legende = 200              # réserve à droite pour la légende
+largeur_legende = 200
 largeur_carte = largeur_total - largeur_legende
-
-# zoom (change si nécessaire)
-scale_boost = 1.5
+scale_boost = 0.9  # zoom plus fort
 
 # ---------- lecture du shapefile ----------
 sf = shapefile.Reader(fichier_shp)
-france_shapes = sf.shapes()
+records = sf.records()
+all_shapes = sf.shapes()
 
-# ---------- bbox global (lon/lat) ----------
+# Filtrer uniquement la France métropolitaine (01-95 + Corse 2A/2B)
+france_shapes = []
+for shape, record in zip(all_shapes, records):
+    code = record['code_insee']
+    if code.isdigit() and 1 <= int(code) <= 95:
+        france_shapes.append(shape)
+    elif code in ["2A", "2B"]:
+        france_shapes.append(shape)
+
+# ---------- bbox global ----------
 lon_min = min(s.bbox[0] for s in france_shapes)
 lat_min = min(s.bbox[1] for s in france_shapes)
 lon_max = max(s.bbox[2] for s in france_shapes)
 lat_max = max(s.bbox[3] for s in france_shapes)
 bbox_fr = [lon_min, lat_min, lon_max, lat_max]
 
-# ---------- helper : normaliser le format de pts ----------
+# ---------- helper ----------
 def normalize_pts(pts):
-    """
-    pts peut être :
-     - une liste de couples [(x,y), (x,y), ...]
-     - une liste plate [x0, y0, x1, y1, ...]
-    Retourne une liste de couples [(x,y), ...]
-    """
     if not pts:
         return []
-    # cas liste de couples
     if isinstance(pts[0], (list, tuple)):
         return [(float(a), float(b)) for a, b in pts]
-    # cas liste plate
     it = list(map(float, pts))
     if len(it) % 2 != 0:
-        # si bizarre, tronque le dernier
         it = it[:-1]
     return list(zip(it[0::2], it[1::2]))
 
-# ---------- Convertir tous les shapes en pixels (sans offset centering) ----------
-shapes_pixels = []  # liste de listes de (x,y)
+# ---------- Convertir tous les shapes en pixels ----------
+shapes_pixels = []
 for s in france_shapes:
     raw_pts = coords_to_pixels(s.points, bbox_fr, largeur_carte, hauteur_total)
     pts = normalize_pts(raw_pts)
-    # applique scale_boost (zoom)
     pts = [(x * scale_boost, y * scale_boost) for x, y in pts]
     shapes_pixels.append(pts)
 
-# ---------- Calculer l'enveloppe (min/max) des shapes transformés ----------
+# ---------- Calcul de l'enveloppe pour centrer ----------
 all_x = [x for shape in shapes_pixels for x, _ in shape] if shapes_pixels else [0]
 all_y = [y for shape in shapes_pixels for _, y in shape] if shapes_pixels else [0]
 min_x, max_x = min(all_x), max(all_x)
 min_y, max_y = min(all_y), max(all_y)
 
-# calcule offsets pour centrer la carte dans la zone gauche (0..largeur_carte)
 offset_x = ((largeur_carte) - (max_x - min_x)) / 2 - min_x
 offset_y = (hauteur_total - (max_y - min_y)) / 2 - min_y
 
-# ---------- Prépare la fenêtre FLTK ----------
+# ---------- Prépare la fenêtre ----------
 cree_fenetre(largeur_total, hauteur_total, redimension=False)
 
-# ---------- Dessine les polygones (départements) ----------
+# ---------- Dessine les départements ----------
 for pts in shapes_pixels:
     pts_centered = [(x + offset_x, y + offset_y) for x, y in pts]
-    polygone(pts_centered)  # couleur par défaut ; on peut ajouter remplissage/couleur
+    polygone(pts_centered)
 
-# ---------- Points tests (lon, lat) → transformés en pixels et dessinés ----------
-# points de test en lon/lat (WGS84)
-points_test = [
-    {"type": "hopital", "pos": (2.3522, 48.8566), "nom": "Hôpital Test"},   # Paris
-    {"type": "ecole",   "pos": (4.8357, 45.7640), "nom": "École Test"},     # Lyon
-    {"type": "parc",    "pos": (5.3698, 43.2965), "nom": "Parc Test"},      # Marseille
-    {"type": "maison",  "pos": (3.8772, 43.6119), "nom": "Maison Test"}     # Montpellier
+# ---------- Lieux spécifiques ----------
+lieux = [
+    {"nom": "Catacombes", "pos": (2.3327, 48.8339), "couleur": "black"},  # Paris
+    {"nom": "Bunker Gare de l'Est", "pos": (2.3690, 48.8760), "couleur": "gray"},
+    {"nom": "les thermes verts", "pos": (3.07, 45.77), "couleur": "black"},  # Clermont-Ferrand
+    {"nom": "Station fantôme Croix-Rouge", "pos": (2.3226, 48.8333), "couleur": "darkred"},  # Paris
+    {"nom": "Hôpital abandonné", "pos": (4.8357, 45.7640), "couleur": "green"},  # Lyon
+    {"nom": "Cimetière abandonné", "pos": (1.4442, 43.6045), "couleur": "purple"},  # Toulouse
+    {"nom": "École abandonnée", "pos": (-0.5792, 44.8378), "couleur": "blue"},  # Bordeaux
+    {"nom": "sanatorium", "pos": (2.4901, 49.3172), "couleur": "darkred"},  # Paris
+
+
 ]
 
-couleurs = {
-    "hopital": "green",
-    "ecole": "blue",
-    "parc": "red",
-    "maison": "orange"
-}
-
-# coords_to_pixels attend normalement une liste de points, on l'appelle donc avec [(lon,lat)]
-for p in points_test:
+for p in lieux:
     raw = coords_to_pixels([p["pos"]], bbox_fr, largeur_carte, hauteur_total)
     pts = normalize_pts(raw)
     if not pts:
         continue
     x, y = pts[0]
-    # applique zoom et offset identiques à la carte
     x = x * scale_boost + offset_x
     y = y * scale_boost + offset_y
-    cercle(x, y, 10, couleur=couleurs[p["type"]], remplissage=couleurs[p["type"]])
-    texte(x + 12, y - 6, p["nom"], taille=12)
+    cercle(x, y, 6, couleur=p["couleur"], remplissage=p["couleur"])
+    texte(x + 8, y - 4, p["nom"], taille=12)
 
-# ---------- Légende à droite ----------
+# ---------- Légende ----------
 x_legende = largeur_carte + 40
 y_depart = 80
 espacement = 60
@@ -111,15 +103,17 @@ espacement = 60
 texte(x_legende - 20, 40, "LÉGENDE", taille=16)
 
 elements_legende = [
-    {"nom": "Hôpitaux", "couleur": "green"},
-    {"nom": "Écoles", "couleur": "blue"},
-    {"nom": "Parcs", "couleur": "red"},
-    {"nom": "Maisons", "couleur": "orange"}
+    {"nom": "catacombe", "couleur": "black"},
+    {"nom": "Stations ", "couleur": "darkred"},
+    {"nom": "Bunker ", "couleur": "gray"},
+    {"nom": "hopital", "couleur": "green"},
+    {"nom": "cimetière", "couleur": "purple"},
+    {"nom": "ecole", "couleur": "blue"},
 ]
 
 for i, elem in enumerate(elements_legende):
     y = y_depart + i * espacement
-    cercle(x_legende, y, 14, couleur=elem["couleur"], remplissage=elem["couleur"])
+    cercle(x_legende, y, 10, couleur=elem["couleur"], remplissage=elem["couleur"])
     texte(x_legende + 40, y - 6, elem["nom"], taille=14)
 
 # ---------- final ----------
