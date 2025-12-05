@@ -7,28 +7,19 @@ from typing import Dict, Any
 # --- Constantes FLTK pour l'Overlay ---
 HISTOIRE_TAG = "history_overlay"
 HISTORY_BACKGROUND = "#f0f0f0" 
+image=()
 
 # --- Données d'Histoires (Chemins d'images conservés pour référence mais non utilisés) ---
 HISTOIRES_DETAILLEES = {
     "Catacombes": {
         "nom": "Catacombes de Paris",
         "histoire": ("Anciennes carrières souterraines aménagées en ossuaire au XVIIIe siècle. Elles abritent les restes d'environ six millions de Parisiens."),
-        "image_path": "image/catacombes.gif" 
-    },
-    "Bunker Gare de l'Est": {
-        "nom": "Bunker de la Gare de l'Est",
-        "histoire": ("Ce bunker, construit sous la Gare de l'Est pendant la Seconde Guerre mondiale, servait de refuge et de poste de commandement pour la direction des chemins de fer."),
-        "image_path": "image/bunker.gif"
+        "image_path": "image/catacombes.gif"
     },
     "les thermes verts": {
         "nom": "Les Thermes Verts (Clermont-Ferrand)",
         "histoire": ("Vestiges d'une ancienne station thermale réputée, aujourd'hui laissée à l'abandon. Le lieu est célèbre pour son architecture délabrée."),
         "image_path": "image/thermes.gif"
-    },
-    "Station fantôme Croix-Rouge": {
-        "nom": "Station Fantôme Croix-Rouge",
-        "histoire": "Fermée depuis 1939 au début de la Seconde Guerre mondiale. Un véritable voyage dans le temps sous les rues de Paris.",
-        "image_path": "image/croix_rouge.gif"
     },
     "Hôpital abandonné": {
         "nom": "Ancien Hôpital Militaire (Lyon)",
@@ -45,11 +36,73 @@ HISTOIRES_DETAILLEES = {
         "histoire": "Fermée après un regroupement scolaire, cette grande école est un exemple de patrimoine éducatif figé dans le temps.",
         "image_path": "image/ecole.gif"
     },
-    "sanatorium": {
-        "nom": "Sanatorium de la Forêt Noire",
-        "histoire": "Construit au début du XXe siècle pour traiter la tuberculose, il a été abandonné avec la découverte de traitements efficaces.",
-        "image_path": "image/sanatorium.gif"
+    "Hopital psychiatrique de Bargeme": {
+        "nom": "Hôpital Psychiatrique de Bargème",
+        "histoire": "Un ancien hôpital psychiatrique situé dans le sud de la France, connu pour son architecture imposante et son histoire troublée.",
+        "image_path": "image/hopital_psychiatrique.gif"
     },
+    "Fort de Cognelot": {
+        "nom": "Fort de Cognelot",
+        "histoire": "Un fort militaire du XIXe siècle situé en Bourgogne, aujourd'hui abandonné et envahi par la végétation.",
+        "image_path": "image/fort_cognelot.gif"
+    },
+    "Goussainville Vieux-Pays": {
+        "nom": "Goussainville Vieux-Pays",
+        "histoire": "Un village fantôme près de l'aéroport Charles de Gaulle, abandonné après des nuisances sonores excessives.",
+        "image_path": "image/goussainville.gif"
+    },
+    "Mine Cap Garonne": {
+        "nom": "Mine Cap Garonne",
+        "histoire": "Une ancienne mine de charbon située dans le sud de la France, aujourd'hui abandonnée et ouverte aux explorateurs urbains.",
+        "image_path": "image/mine_cap_garonne.gif"
+    },
+    "Sucrerie de Francieres": {
+        "nom": "Sucrerie de Franières",
+        "histoire": "Une ancienne sucrerie située dans le nord de la France, abandonnée après la fermeture de l'industrie sucrière locale.",
+        "image_path": "image/sucrerie_francieres.gif"
+    },
+    "Chateau Pont-Remy": {
+        "nom": "Château de Pont-Rémy",
+        "histoire": "Un château historique situé en Picardie, aujourd'hui en ruines et entouré de légendes locales.",
+        "image_path": "image/chateau_pont_remy.gif"
+    },
+    "Fort de la Latte": {
+        "nom": "Fort de la Latte",
+        "histoire": "Un fort médiéval situé en Bretagne, célèbre pour son architecture impressionnante et son histoire militaire.",
+        "image_path": "image/fort_de_la_latte.gif"
+    },
+    "Base Lann-Bihoue": {
+        "nom": "Base Aéronavale de Lann-Bihoué",
+        "histoire": "Une ancienne base aéronavale en Bretagne, aujourd'hui partiellement abandonnée et utilisée pour des exercices militaires.",
+        "image_path": "image/base_lann_bihoue.gif"
+    },
+    "Ferme fortifiee Montmartin": {
+        "nom": "Ferme Fortifiée de Montmartin",
+        "histoire": "Une ferme médiévale fortifiée située en Normandie, aujourd'hui abandonnée et envahie par la végétation.",
+        "image_path": "image/ferme_fortifiee_montmartin.gif"
+    },
+    "Ancien Hopital Dreffeac": {
+        "nom": "Ancien Hôpital de Dréfféac",
+        "histoire": "Un ancien hôpital situé en Bretagne, connu pour son architecture imposante et son histoire médicale.",
+        "image_path": "image/ancien_hopital_dreffeac.gif"
+    },
+    "Chateau Mothe-Chandeniers": {
+        "nom": "Château de la Mothe-Chandeniers",
+        "histoire": "Un château romantique en ruines situé dans la Vienne, célèbre pour son architecture pittoresque et son histoire fascinante.",
+        "image_path": "image/chateau_mothe_chandeniers.gif"
+    },
+    "Fort Lupin": {
+        "nom": "Fort Lupin",
+        "histoire": "Un fort côtier situé en Charente-Maritime, construit au XIXe siècle pour défendre la côte atlantique.",
+        "image_path": "image/fort_lupin.gif"
+    },
+    "Ancienne Gare Luxe": {
+        "nom": "Ancienne Gare de Luxe",
+        "histoire": "Une gare désaffectée située en Nouvelle-Aquitaine, autrefois un point névralgique du transport ferroviaire régional.",
+        "image_path": "image/ancienne_gare_luxe.gif"
+    },
+
+
 }
 
 # --- Fonction d'Affichage d'Histoire ---

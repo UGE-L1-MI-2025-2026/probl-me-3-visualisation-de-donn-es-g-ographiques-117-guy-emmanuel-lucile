@@ -114,13 +114,24 @@ for shape_parts in shapes_pixels:
 # Lieux specifiques
 lieux = [
     {"nom": "Catacombes", "pos": (2.3327, 48.8339), "couleur": "black"},
-    {"nom": "Bunker Gare de l'Est", "pos": (2.3690, 48.8760), "couleur": "gray"},
     {"nom": "les thermes verts", "pos": (3.07, 45.77), "couleur": "black"},
-    {"nom": "Station fantome Croix-Rouge", "pos": (2.3226, 48.8333), "couleur": "darkred"},
     {"nom": "Hopital abandonne", "pos": (4.8357, 45.7640), "couleur": "green"},
     {"nom": "Cimetiere abandonne", "pos": (1.4442, 43.6045), "couleur": "purple"},
     {"nom": "Ecole abandonnee", "pos": (-0.5792, 44.8378), "couleur": "blue"},
-    {"nom": "sanatorium", "pos": (2.4901, 49.3172), "couleur": "darkred"},
+    {"nom": "Hopital psychiatrique de Bargeme", "pos": (6.50, 43.75), "couleur": "darkgreen"},
+    {"nom": "Fort de Cognelot", "pos": (5.41, 47.82), "couleur": "orange"},
+    {"nom": "Goussainville Vieux-Pays", "pos": (2.47, 49.03), "couleur": "purple"},
+    {"nom": "Mine Cap Garonne", "pos": (6.03, 43.10), "couleur": "gold"},
+    {"nom": "Sucrerie de Francieres", "pos": (2.61, 49.43), "couleur": "darkblue"},
+    {"nom": "Chateau Pont-Remy", "pos": (1.90, 50.05), "couleur": "darkred"},
+    {"nom": "Fort de la Latte", "pos": (-2.30, 48.65), "couleur": "brown"},
+    {"nom": "Base Lann-Bihoue", "pos": (-3.44, 47.76), "couleur": "darkgray"},
+    {"nom": "Ferme fortifiee Montmartin", "pos": (-1.36, 49.22), "couleur": "purple"},
+    {"nom": "Ancien Hopital Dreffeac", "pos": (-2.05, 47.50), "couleur": "darkred"},
+    {"nom": "Chateau Mothe-Chandeniers", "pos": (0.03, 46.99), "couleur": "gold"},
+    {"nom": "Fort Lupin", "pos": (-0.99, 45.87), "couleur": "darkblue"},
+    {"nom": "Ancienne Gare Luxe", "pos": (0.13, 45.89), "couleur": "darkorange"},
+
 ]
 
 for p in lieux:
