@@ -2,8 +2,10 @@ import shapefile
 import os
 from fltk import *
 from convert import coords_to_pixels
-# Importation de la fonction d'affichage de l'histoire et du dictionnaire
 from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire
+
+
+
 
 # Ce dictionnaire stockera : {ID_OBJET_CERCLE_FLTK: "Nom_du_Lieu"}
 objets_lieux = {}
