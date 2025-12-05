@@ -5,7 +5,6 @@ import math
 def coords_to_pixels(points, bbox, largeur_fenetre, hauteur_fenetre, marge=20):
     """
     Convertit des coordonnées WGS 84 en pixels pour affichage.
-
     Args:
         points: Liste de tuples (longitude, latitude) en degrés
         bbox: [lon_min, lat_min, lon_max, lat_max]
@@ -18,25 +17,33 @@ def coords_to_pixels(points, bbox, largeur_fenetre, hauteur_fenetre, marge=20):
     """
     lon_min, lat_min, lon_max, lat_max = bbox
 
-    # Dimensions utiles (avec marges, pour faire le dessin dans notre fenetre)
+    # Dimensions utiles (avec marges)
     largeur_utile = largeur_fenetre - 2 * marge
     hauteur_utile = hauteur_fenetre - 2 * marge
 
-    # Calcul des échelles (il faut utiliser chaque degré pour chaque pixel qu'on a)
+    # Calcul des échelles
     echelle_x = largeur_utile / (lon_max - lon_min)
     echelle_y = hauteur_utile / (lat_max - lat_min)
 
     # Utiliser la même échelle pour garder les proportions
     echelle = min(echelle_x, echelle_y)
 
+    # Calculer les dimensions réelles après scaling
+    largeur_reelle = (lon_max - lon_min) * echelle
+    hauteur_reelle = (lat_max - lat_min) * echelle
+
+    # Centrer la carte dans la fenêtre
+    offset_x = (largeur_utile - largeur_reelle) / 2
+    offset_y = (hauteur_utile - hauteur_reelle) / 2
+
     # Conversion des points
     pixels = []
     for lon, lat in points:
-        # Conversion longitude -> x
-        x = marge + (lon - lon_min) * echelle
+        # Conversion longitude -> x (avec centrage)
+        x = marge + offset_x + (lon - lon_min) * echelle
 
-        # Conversion latitude -> y (attention : y inversé car lat augmente vers le haut)
-        y = hauteur_fenetre - marge - (lat - lat_min) * echelle
+        # Conversion latitude -> y (attention : y inversé + centrage)
+        y = hauteur_fenetre - marge - offset_y - (lat - lat_min) * echelle
 
         pixels.extend([x, y])
 
@@ -105,9 +112,6 @@ def coords_to_pixels_mercator(points, bbox, largeur_fenetre, hauteur_fenetre, ma
     """
     Convertit des coordonnées WGS 84 en pixels en utilisant la projection Mercator.
 
-    Cette fonction applique d'abord la projection Mercator, puis convertit en pixels.
-    Utile pour avoir un rendu plus réaliste des distances horizontales.
-
     Args:
         points: Liste de tuples (longitude, latitude) en degrés
         bbox: [lon_min, lat_min, lon_max, lat_max] en degrés
@@ -136,15 +140,22 @@ def coords_to_pixels_mercator(points, bbox, largeur_fenetre, hauteur_fenetre, ma
     echelle_y = hauteur_utile / (y_max - y_min)
     echelle = min(echelle_x, echelle_y)
 
+    # Calculer les dimensions réelles et centrer
+    largeur_reelle = (x_max - x_min) * echelle
+    hauteur_reelle = (y_max - y_min) * echelle
+
+    offset_x = (largeur_utile - largeur_reelle) / 2
+    offset_y = (hauteur_utile - hauteur_reelle) / 2
+
     # Conversion des points
     pixels = []
     for lon, lat in points:
         # D'abord en Mercator
         x_merc, y_merc = wgs84_to_mercator(lon, lat)
 
-        # Puis en pixels
-        x = marge + (x_merc - x_min) * echelle
-        y = hauteur_fenetre - marge - (y_merc - y_min) * echelle
+        # Puis en pixels (avec centrage)
+        x = marge + offset_x + (x_merc - x_min) * echelle
+        y = hauteur_fenetre - marge - offset_y - (y_merc - y_min) * echelle
 
         pixels.extend([x, y])
 
@@ -224,10 +235,6 @@ def is_point_in_france_metro(lon, lat):
 
 # EXEMPLE D'UTILISATION
 
-# Ce bloc s'execute seulement quand on lance ce fichier directement
-# (pas quand on l'import dans un autre fichier)
-# Il sert a tester les fonctions du module pour verifier qu'elles marchent bien
-
 if __name__ == "__main__":
     print("=== Module de conversion de coordonnées ===\n")
 
@@ -254,11 +261,7 @@ if __name__ == "__main__":
 
     # Test 4: Conversion en pixels (pour affichage sur fenetre 800x600)
     pixels_wgs = coords_to_pixels(points, bbox, 800, 600)
-    print(f"\nPixels (WGS84): {pixels_wgs[:6]}...")
+    print(f"\nPixels : {pixels_wgs[:6]}...")
 
     pixels_merc = coords_to_pixels_mercator(points, bbox, 800, 600)
-    print(f"Pixels (Mercator): {pixels_merc[:6]}...")
-
-    print("\nModule pret a l'emploi")
-    print("Utilisez coords_to_pixels() pour WGS84 simple")
-    print("Utilisez coords_to_pixels_mercator() pour projection Mercator")
+    print(f"Pixels : {pixels_merc[:6]}...")

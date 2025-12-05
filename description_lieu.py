@@ -2,7 +2,7 @@
 # Gère l'affichage du titre et de la description (texte) de l'histoire.
 
 import fltk
-from typing import Dict, Any
+
 
 # --- Constantes FLTK pour l'Overlay ---
 HISTOIRE_TAG = "history_overlay"
@@ -55,7 +55,7 @@ HISTOIRES_DETAILLEES = {
 # --- Fonction d'Affichage d'Histoire ---
 
 def affiche_histoire(
-    lieu_id: str
+    lieu_id: str, largeur
 ) -> None:
     """
     Affiche un overlay contenant uniquement le titre et la description.
@@ -105,4 +105,9 @@ def affiche_histoire(
                 couleur="black",
                 tag=HISTOIRE_TAG
             )
+            fltk.rectangle(largeur - 50, 50, largeur, 0, tag=HISTOIRE_TAG, epaisseur=3)
+            fltk.ligne(largeur - 45, 45, largeur - 5, 5, tag=HISTOIRE_TAG, epaisseur=2, couleur="red")
+            fltk.ligne(largeur - 5, 45, largeur - 45, 5, tag=HISTOIRE_TAG, epaisseur=2, couleur="red")
+
+
             y_current += 25 # Espacement vertical

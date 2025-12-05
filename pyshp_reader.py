@@ -1,10 +1,10 @@
 import shapefile
 import os
+
+import fltk
 from fltk import *
 from convert import coords_to_pixels
-from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire
-
-
+from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire, HISTOIRE_TAG
 
 
 # Ce dictionnaire stockera : {ID_OBJET_CERCLE_FLTK: "Nom_du_Lieu"}
@@ -17,7 +17,6 @@ fichier_shp = path + "/departements-20180101-shp/departements-20180101.shp"
 largeur_total, hauteur_total = 1200, 1000
 largeur_legende = 200
 largeur_carte = largeur_total - largeur_legende
-scale_boost = 0.9
 
 # lecture du shapefile
 sf = shapefile.Reader(fichier_shp)
@@ -39,8 +38,11 @@ lon_max = max(s.bbox[2] for s in france_shapes)
 lat_max = max(s.bbox[3] for s in france_shapes)
 bbox_fr = [lon_min, lat_min, lon_max, lat_max]
 
+print(f"Bbox France: lon [{lon_min:.2f}, {lon_max:.2f}], lat [{lat_min:.2f}, {lat_max:.2f}]")
+
 
 def normalize_pts(pts):
+    """Normalise une liste de points pour coords_to_pixels"""
     if not pts:
         return []
     if isinstance(pts[0], (list, tuple)):
@@ -52,33 +54,28 @@ def normalize_pts(pts):
 
 
 # Convertir tous les shapes en pixels
-# Correction de la gestion des polygones avec plusieurs parties (iles)
-# Certains departements ont plusieurs parties (iles), il faut les separer correctement
 shapes_pixels = []
 for s in france_shapes:
     if len(s.parts) == 1:
         # Cas simple: un seul polygone
-        raw_pts = coords_to_pixels(s.points, bbox_fr, largeur_carte, hauteur_total)
+        pts_wgs84 = s.points  # Garder les coordonnées WGS84
+        raw_pts = coords_to_pixels(pts_wgs84, bbox_fr, largeur_carte, hauteur_total, marge=20)
         pts = normalize_pts(raw_pts)
-        pts = [(x * scale_boost, y * scale_boost) for x, y in pts]
         shapes_pixels.append([pts])
     else:
         # Cas complexe: plusieurs parties (iles)
-        # s.parts contient les indices de debut de chaque partie
         parts_list = []
         for i in range(len(s.parts)):
             start = s.parts[i]
             end = s.parts[i + 1] if i + 1 < len(s.parts) else len(s.points)
             part_points = s.points[start:end]
 
-            raw_pts = coords_to_pixels(part_points, bbox_fr, largeur_carte, hauteur_total)
+            raw_pts = coords_to_pixels(part_points, bbox_fr, largeur_carte, hauteur_total, marge=20)
             pts = normalize_pts(raw_pts)
-            pts = [(x * scale_boost, y * scale_boost) for x, y in pts]
             parts_list.append(pts)
         shapes_pixels.append(parts_list)
 
-# Calcul de l'enveloppe pour centrer
-# Adaptation pour gerer les listes de parties
+# Calcul de l'enveloppe pour info (mais plus besoin de centrer manuellement)
 all_x = []
 all_y = []
 for shape_parts in shapes_pixels:
@@ -94,20 +91,16 @@ if not all_x or not all_y:
 min_x, max_x = min(all_x), max(all_x)
 min_y, max_y = min(all_y), max(all_y)
 
-offset_x = ((largeur_carte) - (max_x - min_x)) / 2 - min_x
-offset_y = (hauteur_total - (max_y - min_y)) / 2 - min_y
+print(f"Dimensions carte en pixels: largeur={max_x-min_x:.1f}, hauteur={max_y-min_y:.1f}")
 
 # Prepare la fenetre
 cree_fenetre(largeur_total, hauteur_total, redimension=False)
 
 # Dessine les departements
-# Dessin de chaque partie separement
 for shape_parts in shapes_pixels:
     for part in shape_parts:
-        pts_centered = [(x + offset_x, y + offset_y) for x, y in part]
-        # Convertir en liste plate pour polygone()
         flat_pts = []
-        for x, y in pts_centered:
+        for x, y in part:
             flat_pts.extend([x, y])
         polygone(flat_pts, remplissage="#dddddd", couleur="#888888", epaisseur=1, tag="carte")
 
@@ -123,14 +116,13 @@ lieux = [
     {"nom": "sanatorium", "pos": (2.4901, 49.3172), "couleur": "darkred"},
 ]
 
+# Dessiner les lieux
 for p in lieux:
-    raw = coords_to_pixels([p["pos"]], bbox_fr, largeur_carte, hauteur_total)
+    raw = coords_to_pixels([p["pos"]], bbox_fr, largeur_carte, hauteur_total, marge=20)
     pts = normalize_pts(raw)
     if not pts:
         continue
     x, y = pts[0]
-    x = x * scale_boost + offset_x
-    y = y * scale_boost + offset_y
 
     # Dessin du cercle et recuperation de l'ID
     point_id = cercle(
@@ -168,8 +160,10 @@ for i, elem in enumerate(elements_legende):
     texte(x_legende + 40, y - 6, elem["nom"], taille=14)
 
 
-
 mise_a_jour()
+
+lieu_clique_status = False
+lieu_actuel = None
 
 while True:
     ev = donne_ev()
@@ -182,20 +176,34 @@ while True:
 
         elif type_event == "ClicGauche":
 
+            x = abscisse(ev)
+            y = ordonnee(ev)
+
+            # On vérifie si l'utilisateur a cliqué sur X
+            if lieu_clique_status and (largeur_total - 50 < x < largeur_total and 0 < y < 50):
+                efface(HISTOIRE_TAG)
+                mise_a_jour()
+                lieu_clique_status = False
+                lieu_actuel = None
+                continue
+
+            # Clic default sur le plan
             survoles = liste_objets_survoles()
             lieu_clique_nom = None
 
-            # Cherche l'objet de lieu clique
             for obj_id in survoles:
                 if obj_id in objets_lieux:
                     lieu_clique_nom = objets_lieux[obj_id]
                     break
 
             if lieu_clique_nom:
-                # Affiche la page d'histoire (avec texte et image)
-                affiche_histoire(lieu_clique_nom)
-                # Une fois l'histoire affichee, la boucle attend un evenement "Quitte"
-                # pour fermer la fenetre, car il n'y a plus de bouton de retour.
+                lieu_actuel = lieu_clique_nom
+                lieu_clique_status = True
+                affiche_histoire(lieu_clique_nom, largeur_total)
+
+
+
+
 
     mise_a_jour()
 
