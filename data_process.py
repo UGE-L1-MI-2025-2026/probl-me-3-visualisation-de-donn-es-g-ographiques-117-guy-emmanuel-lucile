@@ -14,10 +14,16 @@ def charger_lieux_depuis_json(fichier):
 
     # Si le JSON a une cle "lieux"
     if 'lieux' in data:
-        return data['lieux']
+        lieux = data['lieux']
+    else:
+        lieux = data
 
-    # Sinon retourne data directement (si c'est deja une liste)
-    return data
+    # Normaliser la structure: convertir longitude/latitude en pos
+    for lieu in lieux:
+        if 'pos' not in lieu and 'longitude' in lieu and 'latitude' in lieu:
+            lieu['pos'] = (lieu['longitude'], lieu['latitude'])
+
+    return lieux
 
 
 def sauvegarder_lieux_en_json(lieux, fichier):
@@ -276,6 +282,7 @@ if __name__ == "__main__":
         for lieu in lieux[:3]:
             lon, lat = lieu['pos']
             print(f"  - {lieu['nom']} ({lat:.4f}, {lon:.4f}) - {lieu['couleur']}")
+        print(f"! Remarque: Juste 3 charge, il reste {len(lieux)-3} lieux dans le fichier JSON !")
 
         # Statistiques
         stats = obtenir_statistiques(lieux)
