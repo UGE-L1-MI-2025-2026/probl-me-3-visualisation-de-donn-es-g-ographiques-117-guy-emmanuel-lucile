@@ -1,0 +1,66 @@
+{
+  "lieux": [
+    {
+      "nom": "Catacombes de Paris",
+      "longitude": 2.3327,
+      "latitude": 48.8339,
+      "couleur": "black",
+      "type": "catacombes",
+      "description": "Anciennes carrieres souterraines amenagees en ossuaire au XVIIIe siecle. Elles abritent les restes d'environ six millions de Parisiens.",
+      "annee_abandon": 1786
+    },
+    {
+      "nom": "Bunker Gare de l'Est",
+      "longitude": 2.3690,
+      "latitude": 48.8760,
+      "couleur": "gray",
+      "type": "bunker",
+      "description": "Ce bunker, construit sous la Gare de l'Est pendant la Seconde Guerre mondiale, servait de refuge et de poste de commandement.",
+      "annee_abandon": 1945
+    },
+    {
+      "nom": "Station fantome Croix-Rouge",
+      "longitude": 2.3226,
+      "latitude": 48.8333,
+      "couleur": "darkred",
+      "type": "station",
+      "description": "Fermee depuis 1939 au debut de la Seconde Guerre mondiale. Un veritable voyage dans le temps sous les rues de Paris.",
+      "annee_abandon": 1939
+    },
+    {
+      "nom": "Hopital abandonne Lyon",
+      "longitude": 4.8357,
+      "latitude": 45.7640,
+      "couleur": "green",
+      "type": "hopital",
+      "description": "Ses couloirs vides et ses salles d'operation laissees a l'abandon racontent des milliers d'histoires de vie et de mort.",
+      "annee_abandon": 2010
+    },
+    {
+      "nom": "Ecole abandonnee Bordeaux",
+      "longitude": -0.5792,
+      "latitude": 44.8378,
+      "couleur": "blue",
+      "type": "ecole",
+      "description": "Fermee apres un regroupement scolaire, cette grande ecole est un exemple de patrimoine educatif fige dans le temps.",
+      "annee_abandon": 2005
+    },
+    {
+      "nom": "Sanatorium de la Foret Noire",
+      "longitude": 2.4901,
+      "latitude": 49.3172,
+      "couleur": "darkred",
+      "type": "sanatorium",
+      "description": "Construit au debut du XXe siecle pour traiter la tuberculose, il a ete abandonne avec la decouverte de traitements efficaces.",
+      "annee_abandon": 1960
+    }
+  ],
+  "legende": {
+    "black": "Catacombes",
+    "gray": "Bunkers",
+    "darkred": "Stations/Sanatoriums",
+    "green": "Hopitaux",
+    "blue": "Ecoles",
+    "purple": "Cimetieres"
+  }
+}
