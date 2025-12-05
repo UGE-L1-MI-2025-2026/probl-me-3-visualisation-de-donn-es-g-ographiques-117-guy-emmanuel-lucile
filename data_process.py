@@ -273,7 +273,8 @@ def obtenir_statistiques(liste_lieux):
 if __name__ == "__main__":
     print("=== Module de traitement des donnees - Lieux abandonnes ===\n")
 
-    # Test: charger depuis JSON
+    # Test 1: charger depuis JSON
+    print("--- Test 1: Chargement depuis JSON ---")
     try:
         lieux = charger_lieux_depuis_json('exemple.json')
         print(f"Charge {len(lieux)} lieux depuis JSON")
@@ -282,7 +283,7 @@ if __name__ == "__main__":
         for lieu in lieux[:3]:
             lon, lat = lieu['pos']
             print(f"  - {lieu['nom']} ({lat:.4f}, {lon:.4f}) - {lieu['couleur']}")
-        print(f"! Remarque: Juste 3 charge, il reste {len(lieux)-3} lieux dans le fichier JSON !")
+        print(f"! Remarque: Juste 3 charge, il reste {len(lieux) - 3} lieux dans le fichier JSON !")
 
         # Statistiques
         stats = obtenir_statistiques(lieux)
@@ -296,6 +297,73 @@ if __name__ == "__main__":
         hopitaux = filtrer_par_couleur(lieux, 'green')
         print(f"\nHopitaux abandonnes: {len(hopitaux)}")
 
+        # Test de sauvegarde JSON
+        print("\nTest de sauvegarde en JSON...")
+        sauvegarder_lieux_en_json(lieux, 'test_output.json')
+
+        # Verification que le fichier existe vraiment
+        import os
+
+        if os.path.exists('test_output.json'):
+            taille = os.path.getsize('test_output.json')
+            print(f"Fichier 'test_output.json' cree avec succes ({taille} octets)")
+
+            # Verification qu'on peut le relire
+            try:
+                lieux_verif = charger_lieux_depuis_json('test_output.json')
+                if len(lieux_verif) == len(lieux):
+                    print(f"Verification: {len(lieux_verif)} lieux recharges correctement")
+                else:
+                    print(f"!!! Erreur: {len(lieux_verif)} lieux recharges au lieu de {len(lieux)}")
+            except Exception as e:
+                print(f"!!! Erreur lors de la verification: {e}")
+        else:
+            print("!!! Erreur: le fichier n'a pas ete cree")
+
     except FileNotFoundError:
         print("Fichier exemple.json non trouve")
         print("Creez-le d'abord ou utilisez un autre fichier")
+
+    # Test 2: charger depuis CSV
+    print("\n--- Test 2: Chargement depuis CSV ---")
+    try:
+        lieux_csv = charger_lieux_depuis_csv('exemple.csv')
+        print(f"Charge {len(lieux_csv)} lieux depuis CSV")
+
+        # Afficher les infos
+        for lieu in lieux_csv:
+            lon, lat = lieu['pos']
+            print(f"  - {lieu['nom']} ({lat:.4f}, {lon:.4f}) - {lieu['couleur']}")
+            if lieu['description']:
+                print(f"    Description: {lieu['description']}")
+        print(f"! Remarque: Juste 3 charge, il reste {len(lieux) - 3} lieux dans le fichier CSV !")
+
+        # Test de sauvegarde CSV
+        print("\nTest de sauvegarde en CSV...")
+        sauvegarder_lieux_en_csv(lieux_csv, 'test_output.csv')
+
+        # Verification que le fichier existe vraiment
+        import os
+
+        if os.path.exists('test_output.csv'):
+            taille = os.path.getsize('test_output.csv')
+            print(f"Fichier 'test_output.csv' cree avec succes")
+
+            # Verification qu'on peut le relire
+            try:
+                lieux_verif = charger_lieux_depuis_csv('test_output.csv')
+                if len(lieux_verif) == len(lieux_csv):
+                    print(f"Verification: {len(lieux_verif)} lieux recharges correctement")
+                else:
+                    print(f"!!! Erreur: {len(lieux_verif)} lieux recharges au lieu de {len(lieux_csv)}")
+            except Exception as e:
+                print(f"!!! Erreur lors de la verification: {e}")
+        else:
+            print("!!! Erreur: le fichier n'a pas ete cree")
+
+    except FileNotFoundError:
+        print("Fichier exemple.csv non trouve")
+        print("Creez-le d'abord ou utilisez un autre fichier")
+    except Exception as e:
+        print(f"Erreur lors du traitement CSV: {e}")
+
