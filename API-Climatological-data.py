@@ -2,6 +2,9 @@ from bs4 import BeautifulSoup
 from urllib import request,parse
 import datetime
 import re
+from meteofrance_api import client,MeteoFranceClient,model
+
+MeteoFranceClient.get_forecast
 
 #truc jamais a faire mais flemme
 FORMAT_ISO = "%Y-%m-%dT%H:%M:%SZ"
@@ -32,8 +35,7 @@ def fectStation(departement:int,frequence,all:bool):
     "974", # La Réunion
     "976", # Mayotte
     "975", # Saint-Pierre-et-Miquelon (Collectivité d'outre-mer)
-    "99"   # Autres collectivités (Monaco n'étant pas un département)
-
+    "99"   
 ]
     try:
         assert frequence in ["6min","heure",'quotidien']

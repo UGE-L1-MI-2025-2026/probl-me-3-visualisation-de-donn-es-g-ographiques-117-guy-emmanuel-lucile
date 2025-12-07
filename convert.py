@@ -50,6 +50,54 @@ def coords_to_pixels(points, bbox, largeur_fenetre, hauteur_fenetre, marge=20):
     return pixels
 
 
+def pixels_to_coords(point:tuple[float,float], bbox, largeur_fenetre, hauteur_fenetre, marge=20):
+    """
+    Convertit des coordonnées fenetre en coord wgs 84.
+    Args:
+        points: Liste de tuples (longitude, latitude) en degrés
+        bbox: [lon_min, lat_min, lon_max, lat_max]
+        largeur_fenetre: Largeur de la fenêtre en pixels
+        hauteur_fenetre: Hauteur de la fenêtre en pixels
+        marge: Marge en pixels
+
+    Returns:
+        Liste plate [x1, y1, x2, y2, ...] de coordonnées en pixels
+    """
+    lon_min, lat_min, lon_max, lat_max = bbox
+
+    # Dimensions utiles (avec marges)
+    largeur_utile = largeur_fenetre - 2 * marge
+    hauteur_utile = hauteur_fenetre - 2 * marge
+
+    # Calcul des échelles
+    echelle_x = largeur_utile / (lon_max - lon_min)
+    echelle_y = hauteur_utile / (lat_max - lat_min)
+
+    # Utiliser la même échelle pour garder les proportions
+    echelle = min(echelle_x, echelle_y)
+
+    # Calculer les dimensions réelles après scaling
+    largeur_reelle = (lon_max - lon_min) * echelle
+    hauteur_reelle = (lat_max - lat_min) * echelle
+
+    # Centrer la carte dans la fenêtre
+    offset_x = (largeur_utile - largeur_reelle) / 2
+    offset_y = (hauteur_utile - hauteur_reelle) / 2
+
+    # Conversion des points
+    pixels = []
+    for lon, lat in points:
+        # Conversion longitude -> x (avec centrage)
+        x = marge + offset_x + (lon - lon_min) * echelle
+
+        # Conversion latitude -> y (attention : y inversé + centrage)
+        y = hauteur_fenetre - marge - offset_y - (lat - lat_min) * echelle
+
+        pixels.extend([x, y])
+
+    return pixels
+
+
 # PROJECTION DE MERCATOR
 
 def wgs84_to_mercator(lon, lat):
