@@ -1,10 +1,69 @@
 import json
+import csv
+
+
+def charger_temperatures_csv(fichier, date):
+    """
+    Charge les températures pour une date donnée depuis CSV
+
+    Format CSV attendu:
+    date,departement,temperature_moy
+    2018-07-01,75,26.5
+    2018-07-01,77,27.2
+    """
+    temperatures_jour = {}
+
+    with open(fichier, 'r', encoding='utf-8') as f:
+        # Sauter l'en-tête
+        premiere_ligne = f.readline()
+
+        # Lire chaque ligne
+        for ligne in f:
+            ligne = ligne.strip()
+            if not ligne:
+                continue
+
+            # Séparer par virgule
+            parties = ligne.split(',')
+
+            if len(parties) >= 3:
+                date_csv = parties[0]
+                dep_code = parties[1]
+                temp = float(parties[2])
+
+                if date_csv == date:
+                    temperatures_jour[dep_code] = temp
+
+    return temperatures_jour
+
+
+def obtenir_dates_disponibles_csv(fichier):
+    """
+    Retourne la liste des dates disponibles dans le fichier CSV
+    """
+    dates = set()
+
+    with open(fichier, 'r', encoding='utf-8') as f:
+        # Sauter l'en-tête
+        premiere_ligne = f.readline()
+
+        for ligne in f:
+            ligne = ligne.strip()
+            if not ligne:
+                continue
+
+            parties = ligne.split(',')
+            if len(parties) >= 1:
+                dates.add(parties[0])
+
+    return sorted(list(dates))
 
 
 def charger_temperatures_json(fichier, date):
     """
-    Charge les températures pour une date donnée
+    Charge les températures pour une date donnée depuis JSON
     """
+
     with open(fichier, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -13,10 +72,52 @@ def charger_temperatures_json(fichier, date):
     for entry in data['temperatures']:
         if entry['date'] == date:
             dep_code = entry['departement']
+
             temp = entry['temperature_moy']
+
             temperatures_jour[dep_code] = temp
 
     return temperatures_jour
+
+
+def obtenir_dates_disponibles_json(fichier):
+    """
+    Retourne la liste des dates disponibles dans le fichier JSON
+    """
+
+    with open(fichier, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    dates = set()
+
+    for entry in data['temperatures']:
+        dates.add(entry['date'])
+
+    return sorted(list(dates))
+
+def charger_temperatures(fichier, date):
+    """
+    Charge les températures automatiquement (détecte JSON ou CSV)
+    """
+    if fichier.endswith('.json'):
+        return charger_temperatures_json(fichier, date)
+    elif fichier.endswith('.csv'):
+        return charger_temperatures_csv(fichier, date)
+    else:
+        print("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
+        exit()
+
+def obtenir_dates_disponibles(fichier):
+    """
+    Retourne les dates disponibles (détecte JSON ou CSV)
+    """
+    if fichier.endswith('.json'):
+        return obtenir_dates_disponibles_json(fichier)
+    elif fichier.endswith('.csv'):
+        return obtenir_dates_disponibles_csv(fichier)
+    else:
+        print("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
+        exit()
 
 
 def obtenir_couleur_temperature(temp):
@@ -39,19 +140,6 @@ def obtenir_couleur_temperature(temp):
     else:
         return "#ff0000"  # Rouge
 
-
-def obtenir_dates_disponibles(fichier):
-    """
-    Retourne la liste des dates disponibles dans le fichier
-    """
-    with open(fichier, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    dates = set() # pour n'ajouter pas les memes dates
-    for entry in data['temperatures']:
-        dates.add(entry['date'])
-
-    return sorted(list(dates))
 
 
 def creer_legende_temperatures():

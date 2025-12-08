@@ -104,7 +104,7 @@ def appliquer_zoom(facteur_zoom:float, centre_lon:float, centre_lat:float):
     """
     Recalcule la BBox et redessine la carte entière avec le nouveau niveau de zoom.
     
-    Args:
+    Arguments:
         facteur_zoom (float): Le nouveau facteur d'échelle.
         centre_lon (float): Longitude du nouveau centre de la vue.
         centre_lat (float): Latitude du nouveau centre de la vue.
