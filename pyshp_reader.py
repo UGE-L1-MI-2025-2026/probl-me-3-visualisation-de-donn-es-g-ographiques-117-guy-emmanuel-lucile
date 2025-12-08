@@ -5,6 +5,7 @@ import fltk
 from fltk import *
 from convert import coords_to_pixels
 from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire, HISTOIRE_TAG
+from legende import init_dates, handle_survol
 
 
 # Ce dictionnaire stockera : {ID_OBJET_CERCLE_FLTK: "Nom_du_Lieu"}
@@ -238,6 +239,8 @@ lieux = [
     {"nom": "Fort Lupin", "pos": (-0.99, 45.87), "couleur": "darkblue"},
     {"nom": "Ancienne Gare Luxe", "pos": (0.13, 45.89), "couleur": "darkorange"},
 ]
+dates_lieux = init_dates(lieux)
+
 
 # Dessiner les lieux
 for p in lieux:
@@ -405,6 +408,8 @@ while True:
                     prev_centre_lon = (prev_bbox[0] + prev_bbox[2]) / 2
                     prev_centre_lat = (prev_bbox[1] + prev_bbox[3]) / 2
                     appliquer_zoom(prev_zoom, prev_centre_lon, prev_centre_lat, enregistrer_historique=False)
+    
+    handle_survol(objets_lieux, dates_lieux)
 
     mise_a_jour()
 
