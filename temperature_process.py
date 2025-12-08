@@ -104,8 +104,7 @@ def charger_temperatures(fichier, date):
     elif fichier.endswith('.csv'):
         return charger_temperatures_csv(fichier, date)
     else:
-        print("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
-        exit()
+        raise TypeError("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
 
 def obtenir_dates_disponibles(fichier):
     """
@@ -116,8 +115,7 @@ def obtenir_dates_disponibles(fichier):
     elif fichier.endswith('.csv'):
         return obtenir_dates_disponibles_csv(fichier)
     else:
-        print("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
-        exit()
+        raise TypeError("ERROR: Format de fichier non supporté. Utilisez .json ou .csv")
 
 
 def obtenir_couleur_temperature(temp):
