@@ -6,7 +6,7 @@ import fltk
 
 # --- Constantes FLTK pour l'Overlay ---
 HISTOIRE_TAG = "history_overlay"
-HISTORY_BACKGROUND = "#f0f0f0" 
+HISTORY_BACKGROUND = "#856c6c" 
 image=()
 
 # --- Données d'Histoires (Chemins d'images conservés pour référence mais non utilisés) ---
@@ -135,7 +135,7 @@ def affiche_histoire(
         WINDOW_W // 2, 50, histoire_data['nom'],
         taille=30,
         ancrage="n", 
-        couleur="#333333",
+        couleur="#170707",
         tag=HISTOIRE_TAG,
         police="Helvetica Bold"
     )
