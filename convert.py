@@ -54,7 +54,7 @@ def pixels_to_coords(point:tuple[float,float], bbox, largeur_fenetre, hauteur_fe
     """
     Convertit des coordonnées fenetre en coord wgs 84.
     Args:
-        points: Liste de tuples (longitude, latitude) en degrés
+        point: un point
         bbox: [lon_min, lat_min, lon_max, lat_max]
         largeur_fenetre: Largeur de la fenêtre en pixels
         hauteur_fenetre: Hauteur de la fenêtre en pixels
@@ -95,7 +95,7 @@ def pixels_to_coords(point:tuple[float,float], bbox, largeur_fenetre, hauteur_fe
 
         pixels.extend([x, y])
 
-    return pixels
+    return points
 
 
 # PROJECTION DE MERCATOR

@@ -178,7 +178,6 @@ def appliquer_zoom(facteur_zoom:float, centre_lon:float, centre_lat:float):
         )
         
         # Mise à jour (ou recréation) de l'association ID d'objet FLTK -> Nom du lieu
-        # Note : ceci est crucial car l'ID FLTK change à chaque recréation !
         objets_lieux[point_id] = p["nom"] 
 
         # Dessin du texte
@@ -308,16 +307,20 @@ while True:
         
         if type_event == "Touche":
             print(touche(ev))
-
-            if touche(ev) == 'KP_Add':
-                    # Zoom In (augmentation du facteur)
-                    zoom_factor_step = 1.2 # Zoom 20%
+ 
+            if touche(ev)== 'KP_Add' or touche(ev)== 'plus':
+                    print(touche(ev))
+                    zoom_factor_step = 1.2 
                     appliquer_zoom(zoom_level * zoom_factor_step, abscisse_souris(), ordonnee_souris())
-            elif touche(ev) == 'KP_Subtract':
-                    # Zoom Out (diminution du facteur), avec minimum � 1.0 (vue initiale)
+            elif touche(ev) == 'KP_Subtract' or touche(ev) == 'minus'  :
                     zoom_factor_step = 1.2
                     new_zoom = max(1.0, zoom_level / zoom_factor_step)
                     appliquer_zoom(new_zoom, abscisse_souris(), ordonnee_souris())
+
+            elif touche(ev) == "Down":
+                pass
+            elif touche(ev) == "Up":
+                pass
 
 
 
