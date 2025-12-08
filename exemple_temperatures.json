@@ -1,0 +1,29 @@
+{
+  "temperatures": [
+    {
+      "date": "2018-07-01",
+      "departement": "75",
+      "temperature_moy": 26.5
+    },
+    {
+      "date": "2018-07-01",
+      "departement": "77",
+      "temperature_moy": 27.2
+    },
+    {
+      "date": "2018-07-01",
+      "departement": "01",
+      "temperature_moy": 24.8
+    },
+    {
+      "date": "2018-07-02",
+      "departement": "75",
+      "temperature_moy": 27.1
+    },
+    {
+      "date": "2018-07-02",
+      "departement": "77",
+      "temperature_moy": 27.8
+    }
+  ]
+}
