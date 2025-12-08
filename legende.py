@@ -1,47 +1,33 @@
-# zoom_departement.py
-from pyshp_reader import depart, bbox_fr, largeur_carte, hauteur_total, coords_to_pixels, polygone, efface, mise_a_jour
+# legend_right.py
+from fltk import cree_fenetre, cercle, texte, mise_a_jour, attend_fermeture
 
-def zoom_sur_departement(code_departement: str, marge: int = 20, facteur_zoom: float = 1.5):
-    """
-    Zoom sur un département donné.
-    
-    Args:
-        code_departement (str): code INSEE du département (ex: "75" ou "2A")
-        marge (int): marge en pixels autour du département
-        facteur_zoom (float): facteur de zoom pour agrandir le département
-    """
-    if code_departement not in depart:
-        print(f"Département {code_departement} non trouvé")
-        return
+def dessiner_legende():
+    largeur_fenetre = 800   # largeur totale de la fenêtre
+    hauteur_fenetre = 600   # hauteur totale de la fenêtre
+    largeur_legende = 200   # largeur réservée pour la légende à droite
 
-    shape = depart[code_departement]
-    # Calcul de la bbox du département
-    x_min, y_min, x_max, y_max = shape.bbox
-    centre_lon = (x_min + x_max) / 2
-    centre_lat = (y_min + y_max) / 2
-    lon_range = (x_max - x_min) * facteur_zoom
-    lat_range = (y_max - y_min) * facteur_zoom
+    cree_fenetre(largeur_fenetre, hauteur_fenetre, redimension=False)
 
-    # Nouvelle bbox centrée sur le département
-    bbox_zoom = [
-        centre_lon - lon_range / 2,
-        centre_lat - lat_range / 2,
-        centre_lon + lon_range / 2,
-        centre_lat + lat_range / 2
+    # Position de départ pour la légende
+    x_legende = largeur_fenetre - largeur_legende + 30  # un peu d'espace depuis le bord droit
+    y_depart = 50
+    espacement = 50
+
+    # Éléments de la légende
+    elements = [
+        {"nom": "Hôpitaux", "couleur": "green"},
+        {"nom": "Écoles", "couleur": "blue"},
+        {"nom": "Parcs", "couleur": "red"},
+        {"nom": "Maisons", "couleur": "orange"}
     ]
 
-    # Efface la carte
-    efface("carte")
-
-    # Re-dessine le département en grand
-    if len(shape.parts) == 1:
-        pts = coords_to_pixels(shape.points, bbox_zoom, largeur_carte, hauteur_total, marge)
-        polygone([coord for xy in pts for coord in xy], remplissage="#dddddd", couleur="#888888", epaisseur=2, tag="carte")
-    else:
-        for i in range(len(shape.parts)):
-            start = shape.parts[i]
-            end = shape.parts[i + 1] if i + 1 < len(shape.parts) else len(shape.points)
-            pts = coords_to_pixels(shape.points[start:end], bbox_zoom, largeur_carte, hauteur_total, marge)
-            polygone([coord for xy in pts for coord in xy], remplissage="#dddddd", couleur="#888888", epaisseur=2, tag="carte")
+    for i, elem in enumerate(elements):
+        y = y_depart + i * espacement
+        cercle(x_legende, y, 15, couleur=elem["couleur"], remplissage=elem["couleur"])
+        texte(x_legende + 40, y, elem["nom"], taille=15)
 
     mise_a_jour()
+    attend_fermeture()
+
+if __name__ == "__main__":
+    dessiner_legende()
