@@ -309,15 +309,16 @@ while True:
         if type_event == "Touche":
             print(touche(ev))
 
-            if touche(ev) == 'KP_Add':
-                    # Zoom In (augmentation du facteur)
-                    zoom_factor_step = 1.2 # Zoom 20%
-                    appliquer_zoom(zoom_level * zoom_factor_step, abscisse_souris(), ordonnee_souris())
-            elif touche(ev) == 'KP_Subtract':
-                    # Zoom Out (diminution du facteur), avec minimum � 1.0 (vue initiale)
-                    zoom_factor_step = 1.2
-                    new_zoom = max(1.0, zoom_level / zoom_factor_step)
-                    appliquer_zoom(new_zoom, abscisse_souris(), ordonnee_souris())
+            if touche(ev) == 'plus':
+        # Zoom In
+                zoom_factor_step = 1.2
+                zoom_level *= zoom_factor_step
+                appliquer_zoom(zoom_level, (bbox_actuel[0]+bbox_actuel[2])/2, (bbox_actuel[1]+bbox_actuel[3])/2)
+            elif touche(ev) == 'minus':
+        # Zoom Out
+                zoom_factor_step = 1.2
+                zoom_level = max(1.0, zoom_level / zoom_factor_step)
+                appliquer_zoom(zoom_level, (bbox_actuel[0]+bbox_actuel[2])/2, (bbox_actuel[1]+bbox_actuel[3])/2)
 
 
 
