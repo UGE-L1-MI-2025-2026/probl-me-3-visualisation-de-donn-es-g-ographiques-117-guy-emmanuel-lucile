@@ -39,20 +39,6 @@ Responsable : *Guy Eliassaint*
 - Partie 2 → Partie 3 : Fonctions de dessin pour l'animation
 - Partie 1 → Partie 3 : Données filtrées par date/temps
 
-### **Minimum requis**
-1. Affichage d'au moins un type de carte (départements colorés)
-2. Carte animée montrant l'évolution des données dans le temps
-
-**Charge de travail estimée**
-- Partie 1: ~40% (много форматов данных)
-- Partie 2: ~30% (визуализация statique)
-- Partie 3: ~30% (animation + intégration)
-
-**Ordre recommandé**
-1. Partie 1 commence en premier (fournit les données)
-2. Partie 2 en parallèle après avoir les structures de données
-3. Partie 3 commence après avoir les fonctions de base
-
 
 ### ****Bonus****
 
