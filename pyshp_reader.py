@@ -266,9 +266,9 @@ y_depart = 80
 espacement = 60
 
 texte(x_legende - 30, 40, "LEGENDE", taille=16, police="Helvetica Bold")
-texte(x_legende - 30, hauteur_total - 60, "Touches: (+) Zoom In, (-) Zoom Out", taille=12)
+texte(x_legende - 30, hauteur_total - 100, "Touches: (+) Zoom In, \n (-) Zoom Out", taille=12)
 # NOUVEAU: Instruction pour la touche 'a'
-texte(x_legende - 30, hauteur_total - 40, "(a) Zoom Précédent/France", taille=12, couleur="blue")
+texte(x_legende - 30, hauteur_total - 60, "(a) Zoom Précédent/ \n France", taille=12, couleur="blue")
 
 
 elements_legende = [
