@@ -54,26 +54,46 @@ def handle_survol(objets_lieux, dates_lieux):
                 return
 
             if LAST_OBJ != obj:
-                # efface l'ancien texte
+                # efface l'ancien texte et rectangle
                 if LAST_HOVER:
-                    efface(LAST_HOVER)
+                    efface("hover_date")
                 LAST_HOVER = None
 
                 # affiche le nouveau
-                x = abscisse_souris()
+                x = abscisse_souris() - 1
                 y = ordonnee_souris() - 20
+                texte_str = f"{nom} : {date}"
+
+                # calcul dynamique de la largeur basé sur la longueur du texte
+                # environ 8 pixels par caractère pour taille=14
+                largeur_texte = len(texte_str) * 9
+                hauteur_texte = 20
+                padding = 8
+
+                # dessine le rectangle de fond d'abord
+                rectangle(
+                    x - padding, y - 2,
+                    x + largeur_texte + padding, y + hauteur_texte,
+                    remplissage="#f0f0f0",  # blanc doux
+                    couleur="#888888",  # bordure grise
+                    epaisseur=1,
+                    tag="hover_date"
+                )
+
+                # dessine le texte par-dessus
                 LAST_HOVER = texte(
                     x, y,
-                    f"{nom} : {date}",
+                    texte_str,
                     couleur="red",
                     taille=14,
-                    tag="hover_date"
+                    tag="hover_date",
+                    ancrage="nw"
                 )
                 LAST_OBJ = obj
             return
 
-    # si on ne survole plus rien → on enlève le texte
+    # si on ne survole plus rien → on enlève le texte et le rectangle
     if LAST_HOVER:
-        efface(LAST_HOVER)
+        efface("hover_date")
         LAST_HOVER = None
         LAST_OBJ = None

@@ -56,7 +56,7 @@ centre_lat = (lat_min + lat_max) / 2
 bbox_actuel = bbox_fr.copy()
 print(f"Bbox France: lon [{lon_min:.2f}, {lon_max:.2f}], lat [{lat_min:.2f}, {lat_max:.2f}]")
 
-# NOUVEAU: Historique des BBox et Zoom. Commence avec la vue France entière.
+# Historique des BBox et Zoom. Commence avec la vue France entière.
 historique_zoom = [(bbox_actuel.copy(), zoom_level)]
 
 
@@ -267,7 +267,7 @@ espacement = 60
 
 texte(x_legende - 30, 40, "LEGENDE", taille=16, police="Helvetica Bold")
 texte(x_legende - 30, hauteur_total - 100, "Touches: (+) Zoom In, \n (-) Zoom Out", taille=12)
-# NOUVEAU: Instruction pour la touche 'a'
+# Instruction pour la touche 'a'
 texte(x_legende - 30, hauteur_total - 60, "(a) Zoom Précédent/ \n France", taille=12, couleur="blue")
 
 
@@ -386,7 +386,6 @@ while True:
                 appliquer_zoom(new_zoom_level, (bbox_actuel[0]+bbox_actuel[2])/2, (bbox_actuel[1]+bbox_actuel[3])/2, enregistrer_historique=False)
             
             elif touche_pressee == 'a':
-                # NOUVEAU: Zoom Précédent
                 if len(historique_zoom) > 1:
                     # On retire l'état le plus récent (l'état actuel)
                     historique_zoom.pop() 
