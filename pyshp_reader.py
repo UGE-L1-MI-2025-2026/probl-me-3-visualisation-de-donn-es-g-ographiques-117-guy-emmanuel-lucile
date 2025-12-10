@@ -6,7 +6,7 @@ from fltk import *
 from convert import coords_to_pixels
 from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire, HISTOIRE_TAG
 from legende import init_dates, handle_survol
-
+import api_meteo
 
 # Ce dictionnaire stockera : {ID_OBJET_CERCLE_FLTK: "Nom_du_Lieu"}
 objets_lieux = {}
@@ -284,7 +284,7 @@ for i, elem in enumerate(elements_legende):
     y = y_depart + i * espacement
     cercle(x_legende, y, 10, couleur=elem["couleur"], remplissage=elem["couleur"])
     texte(x_legende + 40, y - 6, elem["nom"], taille=14)
-
+api_meteo.
 
 mise_a_jour()
 
