@@ -4,22 +4,30 @@ import locale
 import re
 from meteofrance_api import MeteoFranceClient
 import pytz
- 
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
-picto ={"brouillard":"pictogramme metéo/brouillard.png",
-        "couvert":"pictogramme metéo/couvert.png",
-        "nuageux":"pictogramme metéo/trés_nuageux.png",
-        "neige":"pictogramme metéo/neiged.png",
-        "pluie":"pictogramme metéo/pluie.png",
-        "soileil":"pictogramme metéo/soleil.png"
-        "198310":,
-
+picto ={
+    "":"pictogramme metéo/Belles Eclaircies.jpg",
+    "":"pictogramme metéo/Brouillards Givrants.jpg",
+    "":"pictogramme metéo/Brumes ou Brouillards.jpg",
+    "":"pictogramme metéo/Couvert, Bruines ou Pluies.jpg",
+    "":"pictogramme metéo/Couvert.jpg",
+    "":"pictogramme metéo/Couvert, Neige Faible.jpg",
+    "":"pictogramme metéo/Couvert, Pluies Modérées ou fortes.jpg",
+    "":"pictogramme metéo/Neige Modérée ou Forte.jpg",
+    "":"pictogramme metéo/Orages Isolés.jpg",
+    "":"pictogramme metéo/Orages.jpg",
+    "":"pictogramme metéo/Soleil.jpg",
+    "":"pictogramme metéo/Soleil Voilé.jpg",
+    "":"pictogramme metéo/Très Nuageux, Courtes Eclaircies.jpg",
+    "":"pictogramme metéo/Variable avec Averses.jpg",
+    "":"pictogramme metéo/Variable, Averses de Neige.jpg",
+    "":"pictogramme metéo/Variable ou Nuageux.jpg"
+        
         }
 client = MeteoFranceClient()
 TIMEZONE =pytz.timezone('Europe/Paris')
 
-
-date = "%A %d %B %Y � %H:%M:%S"
+date = "%A %d %B %Y - %H:%M:%S"
 def meteo_lieu(lat,lont):
     prev = client.get_forecast(48.865205,2.509142)
     now =prev.daily_forecast
@@ -30,19 +38,30 @@ def meteo_lieu(lat,lont):
         utc_dt = datetime.datetime.fromtimestamp(i["dt"], tz=pytz.utc)
         local_dt = utc_dt.astimezone(TIMEZONE)
         jour = local_dt.strftime(date)
-        f[f"j{f"+{z}" if z != 0 else ""}"] = i["weather12H"]["desc"]
+        p = f"j{f"+{z}" if z != 0 else ""}"
+        f[p] = i["weather12H"]["desc"]
 
         z +=1
 
     return f
 
-def selection_picto():
-    chemin = ""
+def selection_picto(jour:int,lon,lat):
+    """
+   Args:
+        jour:le jour de la prévision voulue aujourd'hui a 15 jour aprés soit 0 a 14
+        lon, lat : postion du lieu de la prévis
+        
+
+    Returns:
+        pred
+
+    """
+    indice = f"j{f"+{jour}" if jour != 0 else ""}"
+    a = meteo_lieu(lon,lat)
 
 
+    return a
 
 
-    return chemin
-
-
-print(meteo_lieu(48.865205,2.509142))
+tes =selection_picto(0,48.865205,2.509142)
+print(tes)

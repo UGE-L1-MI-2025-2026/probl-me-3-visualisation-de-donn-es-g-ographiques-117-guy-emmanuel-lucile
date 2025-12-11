@@ -2,7 +2,7 @@ import math
 
 # CONVERSION WGS 84 -> PIXELS
 
-def coords_to_pixels(points, bbox, largeur_fenetre, hauteur_fenetre, marge=20):
+def coords_to_pixels(points:list, bbox:list, largeur_fenetre:int, hauteur_fenetre:int, marge:int=20)->list:
     """
     Convertit des coordonnées WGS 84 en pixels pour affichage.
     Args:
@@ -236,12 +236,7 @@ def haversine_distance(lon1, lat1, lon2, lat2):
     Calcule la distance en kilomètres entre deux points sur Terre.
     Utilise la formule de Haversine.
 
-    Args:
-        lon1, lat1: Coordonnées du premier point (degrés)
-        lon2, lat2: Coordonnées du second point (degrés)
-
-    Returns:
-        Distance en kilomètres
+    
     """
     # Rayon de la Terre en km
     R = 6371.0

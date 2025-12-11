@@ -236,7 +236,7 @@ lieux = [
     {"nom": "Ferme fortifiee Montmartin", "pos": (-1.36, 49.22), "couleur": "purple"},
     {"nom": "Ancien Hopital Dreffeac", "pos": (-2.05, 47.50), "couleur": "green"},
     {"nom": "Chateau Mothe-Chandeniers", "pos": (0.03, 46.99), "couleur": "gold"},
-    {"nom": "Fort Lupin", "pos": (-0.99, 45.87), "couleur": "darkblue"},
+    {"nom": "Fort Lupin" , "pos": (-0.99, 45.87), "couleur": "darkblue"},
     {"nom": "Ancienne Gare Luxe", "pos": (0.13, 45.89), "couleur": "darkorange"},
 ]
 dates_lieux = init_dates(lieux)
@@ -284,7 +284,7 @@ for i, elem in enumerate(elements_legende):
     y = y_depart + i * espacement
     cercle(x_legende, y, 10, couleur=elem["couleur"], remplissage=elem["couleur"])
     texte(x_legende + 40, y - 6, elem["nom"], taille=14)
-api_meteo.
+
 
 mise_a_jour()
 
@@ -293,6 +293,7 @@ lieu_actuel = None
 
 abscisse_souris()
 ordonnee_souris()
+mode_meteo = False
 while True:
     ev = donne_ev()
 
@@ -407,6 +408,16 @@ while True:
                     prev_centre_lon = (prev_bbox[0] + prev_bbox[2]) / 2
                     prev_centre_lat = (prev_bbox[1] + prev_bbox[3]) / 2
                     appliquer_zoom(prev_zoom, prev_centre_lon, prev_centre_lat, enregistrer_historique=False)
+            elif touche_pressee == "e" and mode_meteo == False:
+                #passe en mode meteo
+                if touche_pressee == "q":
+                    #va un avant
+                elif touche_pressee == "d":
+                    #va au jour d'aprés
+
+
+
+                pass
     
     handle_survol(objets_lieux, dates_lieux)
 
