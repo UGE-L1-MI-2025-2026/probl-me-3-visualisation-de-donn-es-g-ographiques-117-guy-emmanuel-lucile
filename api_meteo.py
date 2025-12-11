@@ -8,18 +8,18 @@ locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 picto ={
     "":"pictogramme metéo/Belles Eclaircies.jpg",
     "":"pictogramme metéo/Brouillards Givrants.jpg",
-    "":"pictogramme metéo/Brumes ou Brouillards.jpg",
-    "":"pictogramme metéo/Couvert, Bruines ou Pluies.jpg",
-    "":"pictogramme metéo/Couvert.jpg",
+    "Bancs de Brouillard":"pictogramme metéo/Brumes ou Brouillards.jpg",
+    "Pluie faible":"pictogramme metéo/Couvert, Bruines ou Pluies.jpg",
+    "Couvert":"pictogramme metéo/Couvert.jpg",
     "":"pictogramme metéo/Couvert, Neige Faible.jpg",
     "":"pictogramme metéo/Couvert, Pluies Modérées ou fortes.jpg",
     "":"pictogramme metéo/Neige Modérée ou Forte.jpg",
     "":"pictogramme metéo/Orages Isolés.jpg",
     "":"pictogramme metéo/Orages.jpg",
-    "":"pictogramme metéo/Soleil.jpg",
+    "Eclaircies":"pictogramme metéo/Soleil.jpg",
     "":"pictogramme metéo/Soleil Voilé.jpg",
-    "":"pictogramme metéo/Très Nuageux, Courtes Eclaircies.jpg",
-    "":"pictogramme metéo/Variable avec Averses.jpg",
+    "Très nuageux":"pictogramme metéo/Très Nuageux, Courtes Eclaircies.jpg",
+    "Pluie":"pictogramme metéo/Variable avec Averses.jpg",
     "":"pictogramme metéo/Variable, Averses de Neige.jpg",
     "":"pictogramme metéo/Variable ou Nuageux.jpg"
         
@@ -58,9 +58,11 @@ def selection_picto(jour:int,lon,lat):
     """
     indice = f"j{f"+{jour}" if jour != 0 else ""}"
     a = meteo_lieu(lon,lat)
+    va_in = a[indice]
+    res =picto[va_in]
 
 
-    return a
+    return res
 
 
 tes =selection_picto(0,48.865205,2.509142)
