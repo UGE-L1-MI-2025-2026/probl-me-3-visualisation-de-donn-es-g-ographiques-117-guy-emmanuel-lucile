@@ -133,7 +133,7 @@ lat_max = max(f.bbox[3] for f in formes_france)
 bbox_france = [lon_min, lat_min, lon_max, lat_max]
 
 # Charger les températures pour une date donnée
-date_affichee = input("Saisir le date en format 'aaaa-mm-jj': \n")
+date_affichee = input("Saisir le date en format 'aaaa-mm-jj' de 2018-01-01 a 2025-11-30: \n")
 
 
 temperatures = charger_temperatures(fichier_temperatures, date_affichee)
