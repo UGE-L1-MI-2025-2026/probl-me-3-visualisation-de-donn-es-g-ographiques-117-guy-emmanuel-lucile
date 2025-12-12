@@ -30,7 +30,7 @@ HISTOIRES_DETAILLEES = {
         "histoire": "Un cimetière historique dont l'entretien a cessé. Les tombes sont envahies par la végétation.",
         
     },
-    "Ecole abandonnée": {
+    "Ecole abandonnee": {
         "nom": "Lycée Désaffecté (Bordeaux)",
         "histoire": "Fermée après un regroupement scolaire, cette grande école est un exemple de patrimoine éducatif figé dans le temps.",
         
