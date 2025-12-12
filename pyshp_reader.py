@@ -143,12 +143,18 @@ def dessiner_departements(shapes_data, bbox, tag_depart="carte"):
         # Dessiner toutes les parties du shape
         for part in shapes_parts_zoom:
             flat_pts = []
-            for x, y in part:
-                flat_pts.extend([x, y])
-            
-            poly_id = polygone(flat_pts, remplissage="#dddddd", couleur="#888888", epaisseur=1, tag=tag_depart)
-            
-            objets_departements[poly_id] = code_insee
+            est_dans_la_fenetre = any(
+                0 < x < largeur_fenetre() and 0 < y < hauteur_fenetre() 
+                for x,y in part)
+    
+            if est_dans_la_fenetre:
+                for x, y in part:
+                    flat_pts.extend([x, y])
+
+                if est_dans_la_fenetre:
+                    poly_id = polygone(flat_pts, remplissage="#dddddd", couleur="#888888", epaisseur=1, tag=tag_depart)
+                
+                objets_departements[poly_id] = code_insee
         
 
 
