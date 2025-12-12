@@ -6,8 +6,8 @@ from fltk import *
 from convert import coords_to_pixels
 from description_lieu import HISTOIRES_DETAILLEES, affiche_histoire, HISTOIRE_TAG
 from legende import init_dates, handle_survol
-
-
+import api_meteo
+import temperature
 # Ce dictionnaire stockera : {ID_OBJET_CERCLE_FLTK: "Nom_du_Lieu"}
 objets_lieux = {}
 # Stocke : {ID_OBJET_POLYGON_FLTK: "Code_INSEE_Departement"}
@@ -143,17 +143,33 @@ def dessiner_departements(shapes_data, bbox, tag_depart="carte"):
         # Dessiner toutes les parties du shape
         for part in shapes_parts_zoom:
             flat_pts = []
-            for x, y in part:
-                flat_pts.extend([x, y])
-            
-            poly_id = polygone(flat_pts, remplissage="#dddddd", couleur="#888888", epaisseur=1, tag=tag_depart)
-            
-            objets_departements[poly_id] = code_insee
+            est_dans_la_fenetre = any(
+                0 < x < largeur_fenetre() and 0 < y < hauteur_fenetre() 
+                for x,y in part)
+    
+            if est_dans_la_fenetre:
+                for x, y in part:
+                    flat_pts.extend([x, y])
+
+                if est_dans_la_fenetre:
+                    poly_id = polygone(flat_pts, remplissage="#dddddd", couleur="#888888", epaisseur=1, tag=tag_depart)
+                
+                objets_departements[poly_id] = code_insee
+        
 
 
 def appliquer_zoom(new_zoom_level:float, centre_lon:float, centre_lat:float, enregistrer_historique=True):
     """
-    Recalcule la BBox et redessine la carte entière avec le nouveau niveau de zoom.
+    Docstring for appliquer_zoom
+        Recalcule la BBox et redessine la carte entière avec le nouveau niveau de zoom.
+
+    :param new_zoom_level: Description
+    :type new_zoom_level: float
+    :param centre_lon: Description
+    :type centre_lon: float
+    :param centre_lat: Description
+    :type centre_lat: float
+    :param enregistrer_historique: Description
     """
     global zoom_level, bbox_actuel, historique_zoom
     
@@ -210,13 +226,34 @@ def appliquer_zoom(new_zoom_level:float, centre_lon:float, centre_lat:float, enr
         texte(x + 8, y - 4, p["nom"], taille=12, tag="legende_point")
 
     mise_a_jour()
-    
+
+
 # Prepare la fenetre
 cree_fenetre(largeur_total, hauteur_total, redimension=False)
 
 # Dessine les departements
 dessiner_departements(shapes_pixels_initial, bbox_fr)
 
+def colorier_map(date):
+    temp =temperature.charger_temperatures('temperature-quotidienne-departementale.csv',date)
+    colriage = temperature.coloriage(temp)
+    global objets_departements
+
+    for id,dep in objets_departements.items():
+        couleur = colriage.get(dep,"#ffffff")
+        modifie(id,remplissage =couleur)
+        
+        
+def remise_blanc(date):
+    temp =temperature.charger_temperatures('temperature-quotidienne-departementale.csv',date)
+    colriage = temperature.coloriage(temp)
+    global objets_departements
+
+    for id,dep in objets_departements.items():
+        couleur = "#ffffff"
+        modifie(id,remplissage =couleur)
+
+    
 
 # Lieux specifiques
 lieux = [
@@ -236,7 +273,7 @@ lieux = [
     {"nom": "Ferme fortifiee Montmartin", "pos": (-1.36, 49.22), "couleur": "purple"},
     {"nom": "Ancien Hopital Dreffeac", "pos": (-2.05, 47.50), "couleur": "green"},
     {"nom": "Chateau Mothe-Chandeniers", "pos": (0.03, 46.99), "couleur": "gold"},
-    {"nom": "Fort Lupin", "pos": (-0.99, 45.87), "couleur": "darkblue"},
+    {"nom": "Fort Lupin" , "pos": (-0.99, 45.87), "couleur": "darkblue"},
     {"nom": "Ancienne Gare Luxe", "pos": (0.13, 45.89), "couleur": "darkorange"},
 ]
 dates_lieux = init_dates(lieux)
@@ -285,7 +322,32 @@ for i, elem in enumerate(elements_legende):
     cercle(x_legende, y, 10, couleur=elem["couleur"], remplissage=elem["couleur"])
     texte(x_legende + 40, y - 6, elem["nom"], taille=14)
 
+def affiche_meteo(j:int=0):
+    """
+    Docstring for affiche_meteo
+    
+    :param j: permet affichier la meteo sur la un jour donné maximun jour aprés
+    :type j: int
+    """
+   
+    print(j)
+   
 
+    for l in lieux:
+        pos:tuple =l["pos"]
+        ch =api_meteo.selection_picto(j,pos[1],pos[0])
+        cord_inter = coords_to_pixels([(pos[0]-0.1,pos[1]+0.3)],bbox_fr, largeur_carte, hauteur_total, marge=20)
+        try:
+            image(cord_inter[0],cord_inter[1],ch,largeur =20,hauteur=20,tag="meteo")
+        except FileNotFoundError as e:
+            image(cord_inter[0],cord_inter[1],"pictogramme metéo/inconnud.jp",largeur =20,hauteur=20,tag="meteo")
+            print(f"erreur fichier:{e}")
+
+
+    
+
+bil= coords_to_pixels([(2.3327-0.01, 48.8339+0.02)],bbox_fr, largeur_carte, hauteur_total, marge=20)
+point(bil[0], bil[1],"gray",4 )
 mise_a_jour()
 
 lieu_clique_status = False
@@ -293,6 +355,55 @@ lieu_actuel = None
 
 abscisse_souris()
 ordonnee_souris()
+jour = 0
+mode_meteo = False
+mode_temperature = False
+
+
+def translation(direction:str):
+    DECALAGE_FACTOR = 0.05
+    centre_lon_actuel = (bbox_actuel[0] + bbox_actuel[2]) / 2
+    centre_lat_actuel = (bbox_actuel[1] + bbox_actuel[3]) / 2
+        
+    lon_range_actuel = bbox_actuel[2] - bbox_actuel[0]
+    lat_range_actuel = bbox_actuel[3] - bbox_actuel[1]
+    new_centre_lon = centre_lon_actuel
+    new_centre_lat = centre_lat_actuel
+    decalage_lon_deg = lon_range_actuel * DECALAGE_FACTOR
+    decalage_lat_deg = lat_range_actuel * DECALAGE_FACTOR
+
+    match direction:
+        case "Right":
+            print('q')
+            new_centre_lon += decalage_lon_deg
+        case "Up":
+            print('z')
+
+            new_centre_lat += decalage_lat_deg
+        case "Down":
+            print('s')
+
+            new_centre_lat -= decalage_lat_deg
+        case "Left":
+            print("d")
+            new_centre_lon -= decalage_lon_deg
+
+    appliquer_zoom(zoom_level, new_centre_lon, new_centre_lat, enregistrer_historique=False)
+
+                    
+        
+
+    
+        
+
+    
+
+
+
+
+
+
+
 while True:
     ev = donne_ev()
 
@@ -407,6 +518,77 @@ while True:
                     prev_centre_lon = (prev_bbox[0] + prev_bbox[2]) / 2
                     prev_centre_lat = (prev_bbox[1] + prev_bbox[3]) / 2
                     appliquer_zoom(prev_zoom, prev_centre_lon, prev_centre_lat, enregistrer_historique=False)
+            
+            elif touche_pressee =="Up":
+
+                translation("Up")
+                pass
+            elif touche_pressee =="Down":
+                translation("Down")
+                pass
+            elif touche_pressee =="Left":
+                translation("Left")
+
+                pass
+            elif touche_pressee =="Right":
+                translation("Right")
+                pass
+            elif touche_pressee == "e" :
+                mode_meteo = not(mode_meteo)
+
+               
+                        
+                if mode_meteo:
+                    print("affiche")
+
+                    affiche_meteo(jour)
+                else:
+                    efface("meteo")
+            elif touche_pressee == "d" and mode_meteo:
+                
+                jour +=1
+                if jour >14:
+                    jour = 0
+                elif jour < 0:
+                    jour=14 
+                efface("meteo")
+                affiche_meteo(jour)
+                
+                
+            elif touche_pressee == "q" and mode_meteo:
+                jour -=1
+                if jour >14:
+                    jour = 0
+                elif jour < 0:
+                    jour=14 
+                efface("meteo")
+                affiche_meteo(jour)
+                pass
+                #va au jour d'apré
+            elif touche_pressee == "k":
+                a =texte(200,400,"veuillez regarder dans la console svp")
+                entrer = str(input("veuillez choisir une date enntre 2018-01-01 et 2025-11-30 dans le meme format svp:"))
+                if entrer == "exit":
+                    remise_blanc()
+                else:
+                    colorier_map(entrer)
+                efface(a)
+            
+
+                
+                    
+
+
+
+                   
+            
+            
+            
+           
+
+
+
+
     
     handle_survol(objets_lieux, dates_lieux)
 
