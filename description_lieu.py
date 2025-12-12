@@ -20,17 +20,17 @@ HISTOIRES_DETAILLEES = {
         "histoire": ("Vestiges d'une ancienne station thermale réputée, aujourd'hui laissée à l'abandon. Le lieu est célèbre pour son architecture délabrée."),
         
     },
-    "Hôpital abandonné": {
+    "Hopital abandonne": {
         "nom": "Ancien Hôpital Militaire (Lyon)",
         "histoire": "Ses couloirs vides et ses salles d'opération laissées à l'abandon racontent des milliers d'histoires de vie et de mort.",
         
     },
-    "Cimetière abandonné": {
+    "Cimetiere abandonné": {
         "nom": "Nécropole Oubliée (Toulouse)",
         "histoire": "Un cimetière historique dont l'entretien a cessé. Les tombes sont envahies par la végétation.",
         
     },
-    "École abandonnée": {
+    "Ecole abandonnée": {
         "nom": "Lycée Désaffecté (Bordeaux)",
         "histoire": "Fermée après un regroupement scolaire, cette grande école est un exemple de patrimoine éducatif figé dans le temps.",
         
