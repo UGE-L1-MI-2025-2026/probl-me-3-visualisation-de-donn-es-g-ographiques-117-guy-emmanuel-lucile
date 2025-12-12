@@ -119,6 +119,9 @@ for forme, enregistrement in zip(toutes_les_formes, enregistrements):
     elif code in ["2A", "2B"]:  # Corse
         code_vers_forme[code] = forme
         formes_france.append(forme)
+    elif code in ["69D", "69M"]:  # Rhône divisé depuis 2015
+        code_vers_forme[code] = forme
+        formes_france.append(forme)
 
 print(f"Nombre de départements chargés: {len(code_vers_forme)}")
 
@@ -151,8 +154,11 @@ texte(
 
 # Parcourir tous les départements
 for code, forme in code_vers_forme.items():
+    # Normaliser pour 69D et 69M -> 69
+    code_temp = '69' if code in ['69D', '69M'] else code
+
     # Récupérer la température de ce département
-    temp = temperatures.get(code)
+    temp = temperatures.get(code_temp)
 
     # Choisir la couleur selon la température
     couleur = couleur_selon_temperature(temp)
