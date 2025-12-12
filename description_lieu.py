@@ -25,7 +25,7 @@ HISTOIRES_DETAILLEES = {
         "histoire": "Ses couloirs vides et ses salles d'opération laissées à l'abandon racontent des milliers d'histoires de vie et de mort.",
         
     },
-    "Cimetiere abandonné": {
+    "Cimetiere abandonne": {
         "nom": "Nécropole Oubliée (Toulouse)",
         "histoire": "Un cimetière historique dont l'entretien a cessé. Les tombes sont envahies par la végétation.",
         
